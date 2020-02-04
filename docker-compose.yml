@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  algo:
+    image: cs:latest
+    volumes:
+      - .:/home/cs385
