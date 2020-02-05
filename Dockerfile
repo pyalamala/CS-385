@@ -1,3 +1,3 @@
 FROM ubuntu:18.04
 
-RUN apt-get update && apt-get install -y build-essential valgrind
+RUN apt-get update && apt-get install -y build-essential valgrind gdb
