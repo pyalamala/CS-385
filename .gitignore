@@ -33,3 +33,7 @@
 
 # Other
 *.zip
+.vscode
+
+# makefiles
+makefile
