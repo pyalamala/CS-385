@@ -1,1 +1,1 @@
-docker-compose run --rm algo bash
+docker-compose run --rm algo bash -c 'cd /home && bash'
