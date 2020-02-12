@@ -4,4 +4,4 @@ services:
   algo:
     image: cs:latest
     volumes:
-      - .:/home/cs385
+      - .:/home
