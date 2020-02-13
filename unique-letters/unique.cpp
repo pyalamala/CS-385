@@ -49,7 +49,7 @@ int main(int argc, char *const argv[]) {
     }
     iss.clear();
 
-    if (!all_unique_letters(s)) {
+    if (s.length() > 26 || !all_unique_letters(s)) {
         cout << "Duplicate letters found." << endl;
     } else {
         cout << "All letters are unique." << endl;
