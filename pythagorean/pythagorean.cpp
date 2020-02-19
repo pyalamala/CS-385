@@ -37,9 +37,9 @@ vector<Triple> find_pyth_triples(const int limit) {
     for (int n = 1; n < limit; n++) {
         for (int m = n + 1; m < limit; m++) {
             int a = 2 * m * n;
-            int b = pow(m, 2) - pow(n, 2);
-            int c = pow(m, 2) + pow(n, 2);
-            if (c >= limit) {
+            int b = m * m - n * n;
+            int c = m * m + n * n;
+            if (c > limit) {
                 break;
             }
             triples.push_back(Triple(a, b, c));
