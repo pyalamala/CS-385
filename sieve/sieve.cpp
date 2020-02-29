@@ -132,7 +132,7 @@ int main() {
 
     // TODO: write code that uses your class to produce the desired output.
     cout << endl;
-    PrimesSieve sieve = PrimesSieve(limit);
+    PrimesSieve sieve(limit);
     sieve.display_primes();
 
     return 0;
