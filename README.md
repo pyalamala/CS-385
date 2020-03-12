@@ -8,7 +8,7 @@ docker build -f Dockerfile -t cs:latest .
 
 Valgrind 
 ```bash
-valgrind <executable> --leak-check=yes
+valgrind --leak-check=yes <executable> [args...] > /dev/null
 ```
 
 [Makefile](https://gist.github.com/robertschaedler3/9f08ad456da951cbe609c2fc8eb67146):
