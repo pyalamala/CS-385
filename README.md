@@ -6,6 +6,11 @@ Build Docker Image:
 docker build -f Dockerfile -t cs:latest .
 ```
 
+Valgrind 
+```bash
+valgrind <executable> --leak-check=yes
+```
+
 [Makefile](https://gist.github.com/robertschaedler3/9f08ad456da951cbe609c2fc8eb67146):
 ```shell
 CXX      = g++
