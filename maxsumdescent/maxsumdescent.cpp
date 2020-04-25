@@ -1,35 +1,41 @@
 /*******************************************************************************
  * Name        : maxsumdescent.cpp
- * Author      : 
+ * Author      : Robert Schaedler III
  * Version     : 1.0
- * Date        : 
+ * Date        : Apr. 21, 2020
  * Description : Dynamic programming solution to max sum descent problem.
- * Pledge      :
+ * Pledge      : I pledge my honor that I have abided by the Stevens Honor System.
  ******************************************************************************/
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 using namespace std;
 
 const char DELIMITER = ' ';
 
-int **values, // This is your 2D array of values, read from the file.
-    **sums;   // This is your 2D array of partial sums, used in DP.
+int **values,  // This is your 2D array of values, read from the file.
+    **sums;    // This is your 2D array of partial sums, used in DP.
 
-int num_rows; // num_rows tells you how many rows the 2D array has.
-              // The first row has 1 column, the second row has 2 columns, and
-              // so on...
+int num_rows;  // num_rows tells you how many rows the 2D array has.
+               // The first row has 1 column, the second row has 2 columns, and
+               // so on...
 
 /**
  * Displays the 2D array of values read from the file in the format of a table.
  */
 void display_table() {
-    // TODO
+    for (int i = 0; i < num_rows; i++) {
+        for (int j = 0; j < i + 1; j++) {
+            // TODO: format spacing
+            cout << values[i][j] << " ";
+        }
+        cout << endl;
+    }
 }
 
 /**
@@ -83,8 +89,22 @@ bool load_values_from_file(const string &filename) {
         cerr << "Error: An I/O error occurred reading '" << filename << "'.";
         return false;
     }
-    
-    // TODO
+
+    num_rows = data.size();
+    values = new int *[num_rows];
+    int *row;
+    int row_size = 0;
+    for (int i = 0; i < num_rows; i++) {
+        stringstream ss(data[i]);
+        string buffer;
+
+        int row_index = 0;
+        row = new int[++row_size];
+        while (getline(ss, buffer, DELIMITER)) {
+            row[row_index++] = stoi(buffer);
+        }
+        values[i] = row;
+    }
 
     return true;
 }
@@ -97,7 +117,7 @@ void cleanup() {
     // TODO
 }
 
-int main(int argc, char * const argv[]) {
+int main(int argc, char *const argv[]) {
     if (argc != 2) {
         cerr << "Usage: " << argv[0] << " <filename>" << endl;
         return 1;
@@ -107,7 +127,7 @@ int main(int argc, char * const argv[]) {
         return 1;
     }
 
-    // TODO
+    display_table();
 
     return 0;
 }
