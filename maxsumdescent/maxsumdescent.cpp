@@ -18,23 +18,27 @@ using namespace std;
 
 const char DELIMITER = ' ';
 
-int **values,  // This is your 2D array of values, read from the file.
-    **sums;    // This is your 2D array of partial sums, used in DP.
+int **values, **sums;
+int num_rows, max_sum_index, table_max;
 
-int num_rows;  // num_rows tells you how many rows the 2D array has.
-               // The first row has 1 column, the second row has 2 columns, and
-               // so on...
+/**
+ * Returns the number of digits in an integer. 
+ */
+int num_digits(int num) {
+    return (num / 10 == 0) ? 1 : 1 + num_digits(num / 10);
+}
 
 /**
  * Displays the 2D array of values read from the file in the format of a table.
  */
 void display_table() {
+    int max_width = num_digits(table_max);
     for (int i = 0; i < num_rows; i++) {
-        for (int j = 0; j < i + 1; j++) {
-            // TODO: format spacing
-            cout << values[i][j] << " ";
+        cout << setw(max_width) << values[i][0];
+        for (int j = 1; j < i + 1; j++) {
+            cout << setw(max_width + 1) << values[i][j];
         }
-        cout << endl;
+        cout << "\n";
     }
 }
 
@@ -45,15 +49,29 @@ void display_table() {
  * of partial sums.
  */
 int compute_max_sum() {
-    // TODO
+    sums = new int *[num_rows];
+    sums[0] = values[0];
 
-    // Populate the 2D array of partial sums. It should still work even if
-    // num_rows is 0 (i.e. the file was blank).
+    int *row;
+    for (int i = 1; i < num_rows; ++i) {
+        row = new int[i + 1];
+        row[0] = values[i][0] + sums[i - 1][0];
+        for (int j = 1; j < i; ++j) {
+            row[j] = values[i][j] + max(sums[i - 1][j - 1], sums[i - 1][j]);
+        }
+        row[i] = values[i][i] + sums[i - 1][i - 1];
+        sums[i] = row;
+    }
 
-    // Loop over the last row to find the max sum.
+    int max_sum = sums[num_rows - 1][0];
+    for (int i = 1; i < num_rows; ++i) {
+        if (sums[num_rows - 1][i] > max_sum) {
+            max_sum = sums[num_rows - 1][i];
+            max_sum_index = i;
+        }
+    }
 
-    // Return the max sum.
-    return 0;
+    return max_sum;
 }
 
 /**
@@ -62,7 +80,24 @@ int compute_max_sum() {
  */
 vector<int> backtrack_solution() {
     vector<int> solution;
-    // TODO
+    solution.reserve(num_rows);
+
+    int row_index = max_sum_index;
+    solution.emplace_back(values[num_rows - 1][row_index]);
+    for (int i = num_rows - 2; i > 0; --i) {
+        if (row_index == 0) {
+            solution.emplace_back(values[i][row_index]);
+        } else if (row_index > i) {
+            solution.emplace_back(values[i][--row_index]);
+        } else {
+            if (sums[i][row_index] < sums[i][row_index - 1]) {
+                solution.emplace_back(values[i][--row_index]);
+            } else {
+                solution.emplace_back(values[i][row_index]);
+            }
+        }
+    }
+    solution.emplace_back(values[0][0]);
 
     return solution;
 }
@@ -74,7 +109,7 @@ vector<int> backtrack_solution() {
 bool load_values_from_file(const string &filename) {
     ifstream input_file(filename.c_str());
     if (!input_file) {
-        cerr << "Error: Cannot open file '" << filename << "'." << endl;
+        cerr << "Error: Cannot open file '" << filename << "'.\n";
         return false;
     }
     input_file.exceptions(ifstream::badbit);
@@ -92,16 +127,17 @@ bool load_values_from_file(const string &filename) {
 
     num_rows = data.size();
     values = new int *[num_rows];
-    int *row;
-    int row_size = 0;
+    int num;
     for (int i = 0; i < num_rows; i++) {
         stringstream ss(data[i]);
         string buffer;
 
         int row_index = 0;
-        row = new int[++row_size];
+        int *row = new int[i + 1];
         while (getline(ss, buffer, DELIMITER)) {
-            row[row_index++] = stoi(buffer);
+            num = stoi(buffer);
+            table_max = max(table_max, num);
+            row[row_index++] = num;
         }
         values[i] = row;
     }
@@ -114,12 +150,20 @@ bool load_values_from_file(const string &filename) {
  * partial sums.
  */
 void cleanup() {
-    // TODO
+    for (int i = 0; i < num_rows; i++) {
+        delete[] values[i];
+        delete[] sums[i];
+    }
+    delete[] values;
+    delete[] sums;
 }
 
 int main(int argc, char *const argv[]) {
+    // ios_base::sync_with_stdio(false);
+    // cin.tie(NULL);
+
     if (argc != 2) {
-        cerr << "Usage: " << argv[0] << " <filename>" << endl;
+        cerr << "Usage: " << argv[0] << " <filename>\n";
         return 1;
     }
     string filename(argv[1]);
@@ -127,7 +171,22 @@ int main(int argc, char *const argv[]) {
         return 1;
     }
 
+    if (num_rows == 0) {
+        cout << "Max sum: 0\nValues: [] \n";
+        return 0;
+    }
+
     display_table();
+    cout << "Max sum: " << compute_max_sum() << "\n";
+
+    vector<int> solution = backtrack_solution();
+    cout << "Values: [" << solution[num_rows - 1];
+    for (int i = num_rows - 2; i >= 0; --i) {
+        cout << ", " << solution[i];
+    }
+    cout << "]\n";
+
+    cleanup();
 
     return 0;
 }
