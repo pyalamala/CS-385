@@ -127,6 +127,7 @@ bool load_values_from_file(const string &filename) {
 
     num_rows = data.size();
     values = new int *[num_rows];
+    sums = new int *[num_rows];
     int num;
     for (int i = 0; i < num_rows; i++) {
         stringstream ss(data[i]);
@@ -139,7 +140,9 @@ bool load_values_from_file(const string &filename) {
             table_max = max(table_max, num);
             row[row_index++] = num;
         }
+
         values[i] = row;
+        sums[i] = row;
     }
 
     return true;
